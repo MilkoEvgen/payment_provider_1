@@ -1,6 +1,5 @@
 package com.milko.payment_provider.mapper;
 
-import com.milko.payment_provider.dto.CardDataDto;
 import com.milko.payment_provider.dto.CustomerDto;
 import com.milko.payment_provider.dto.TransactionDto;
 import com.milko.payment_provider.model.Transaction;
@@ -21,7 +20,6 @@ public class TransactionMapper {
                 .createdAt(transactionDto.getCreatedAt())
                 .updatedAt(transactionDto.getUpdatedAt())
                 .type(transactionDto.getType())
-                .cardDataId(transactionDto.getCardData().getId())
                 .language(transactionDto.getLanguage())
                 .notificationUrl(transactionDto.getNotificationUrl())
                 .customerId(transactionDto.getCustomer().getId())
@@ -46,10 +44,10 @@ public class TransactionMapper {
                 .build();
     }
 
-    public TransactionDto map(Transaction transaction, CardDataDto cardDataDto, CustomerDto customerDto){
+    public TransactionDto map(Transaction transaction, CustomerDto customerDto){
         return TransactionDto.builder()
                 .id(transaction.getId())
-                .cardData(cardDataDto)
+//                .cardData(cardDataDto)
                 .customer(customerDto)
                 .paymentMethod(transaction.getPaymentMethod())
                 .amount(transaction.getAmount())

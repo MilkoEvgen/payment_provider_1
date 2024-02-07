@@ -8,14 +8,16 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.UUID;
+
 @RequiredArgsConstructor
 @Service
 public class MerchantService implements ReactiveUserDetailsService {
     private final MerchantRepository merchantRepository;
 
     @Override
-    public Mono<UserDetails> findByUsername(String username) {
-        return merchantRepository.findByUsername(username)
+    public Mono<UserDetails> findByUsername(String uuid) {
+        return merchantRepository.findById(uuid)
                 .map(MerchantDetails::new);
     }
 }

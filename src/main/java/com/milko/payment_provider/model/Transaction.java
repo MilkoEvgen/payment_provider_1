@@ -36,19 +36,22 @@ public class Transaction {
 
     private TransactionType type;
 
-    @Column(value = "card_data_id")
-    private Integer cardDataId;
-
     private String language;
 
     @Column(value = "notification_url")
     private String notificationUrl;
 
     @Column(value = "customer_id")
-    private Integer customerId;
+    private UUID customerId;
 
     @Column(value = "merchant_id")
-    private Integer merchantId;
+    private UUID merchantId;
+
+//    @Column(value = "card_data_id")
+//    private UUID cardDataId;
+
+    @Column(value = "wallet_id")
+    private UUID walletId;
 
     private TransactionStatus status;
 

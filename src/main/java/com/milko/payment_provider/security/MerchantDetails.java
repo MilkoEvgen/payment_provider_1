@@ -6,12 +6,13 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Collection;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 public class MerchantDetails implements UserDetails {
     private final Merchant merchant;
 
-    public Integer getId(){
+    public UUID getId(){
         return merchant.getId();
     }
 
@@ -22,12 +23,12 @@ public class MerchantDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return merchant.getPassword();
+        return merchant.getSecretKey();
     }
 
     @Override
     public String getUsername() {
-        return merchant.getUsername();
+        return merchant.getId().toString();
     }
 
     @Override

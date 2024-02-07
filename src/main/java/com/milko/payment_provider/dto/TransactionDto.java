@@ -37,13 +37,13 @@ public class TransactionDto {
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private TransactionType type;
 
-    private CardDataDto cardData;
-
     private String language;
 
     private String notificationUrl;
 
     private CustomerDto customer;
+
+    private CardDataDto cardData;
 
     @Schema(accessMode = Schema.AccessMode.READ_ONLY)
     private TransactionStatus status;

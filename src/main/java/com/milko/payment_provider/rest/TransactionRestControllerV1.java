@@ -30,11 +30,11 @@ public class TransactionRestControllerV1 {
     )
     @PostMapping("/transaction")
     public Mono<CustomResponseEntity> createTransaction(@RequestBody TransactionDto dto, Authentication auth){
-        Integer merchantId = ((MerchantDetails) auth.getPrincipal()).getId();
+        UUID merchantId = ((MerchantDetails) auth.getPrincipal()).getId();
         return transactionService.createTransaction(dto, merchantId, TransactionType.TRANSACTION)
                 .map(transactionDto -> CustomResponseEntity.builder()
                             .transaction_id(transactionDto.getId())
-                            .status(TransactionStatus.SUCCESS.toString())
+                            .status(transactionDto.getStatus().toString())
                             .message("OK")
                             .build()
                 ).onErrorResume(e -> Mono.just(CustomResponseEntity.builder()
@@ -53,7 +53,7 @@ public class TransactionRestControllerV1 {
     public Flux<TransactionDto> getAllTransactions(@RequestParam(name = "start_date", required = false) Long startDate,
                                                    @RequestParam(name = "end_date", required = false) Long endDate,
                                                    Authentication auth){
-        Integer merchantId = ((MerchantDetails) auth.getPrincipal()).getId();
+        UUID merchantId = ((MerchantDetails) auth.getPrincipal()).getId();
         return transactionService.getAllTransactions(startDate, endDate, merchantId, TransactionType.TRANSACTION);
     }
 
@@ -63,7 +63,7 @@ public class TransactionRestControllerV1 {
     )
     @GetMapping("/transaction/{transactionId}/details")
     public Mono<TransactionDto> getTransactionById(@PathVariable @Parameter(description = "Transaction id", required = true) UUID transactionId, Authentication auth){
-        Integer merchantId = ((MerchantDetails) auth.getPrincipal()).getId();
+        UUID merchantId = ((MerchantDetails) auth.getPrincipal()).getId();
         return transactionService.findTransactionById(transactionId, merchantId, TransactionType.TRANSACTION);
     }
 
@@ -73,11 +73,11 @@ public class TransactionRestControllerV1 {
     )
     @PostMapping("/payout")
     public Mono<CustomResponseEntity> createPayout(@RequestBody TransactionDto dto, Authentication auth){
-        Integer merchantId = ((MerchantDetails) auth.getPrincipal()).getId();
+        UUID merchantId = ((MerchantDetails) auth.getPrincipal()).getId();
         return transactionService.createTransaction(dto, merchantId, TransactionType.PAYOUT)
                 .map(transactionDto -> CustomResponseEntity.builder()
                         .transaction_id(transactionDto.getId())
-                        .status(TransactionStatus.SUCCESS.toString())
+                        .status(transactionDto.getStatus().toString())
                         .message("OK")
                         .build()
                 ).onErrorResume(e -> Mono.just(CustomResponseEntity.builder()
@@ -96,7 +96,7 @@ public class TransactionRestControllerV1 {
     public Flux<TransactionDto> getAllPayouts(@RequestParam(name = "start_date", required = false) Long startDate,
                               @RequestParam(name = "end_date", required = false) Long endDate,
                               Authentication auth){
-        Integer merchantId = ((MerchantDetails) auth.getPrincipal()).getId();
+        UUID merchantId = ((MerchantDetails) auth.getPrincipal()).getId();
         return transactionService.getAllTransactions(startDate, endDate, merchantId, TransactionType.PAYOUT);
     }
 
@@ -106,7 +106,7 @@ public class TransactionRestControllerV1 {
     )
     @GetMapping("/payout/{payoutId}/details")
     public Mono<TransactionDto> getPayOutById(@PathVariable @Parameter(description = "Transaction id", required = true) UUID payoutId, Authentication auth){
-        Integer merchantId = ((MerchantDetails) auth.getPrincipal()).getId();
+        UUID merchantId = ((MerchantDetails) auth.getPrincipal()).getId();
         return transactionService.findTransactionById(payoutId, merchantId, TransactionType.PAYOUT);
     }
 }

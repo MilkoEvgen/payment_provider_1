@@ -7,6 +7,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.util.UUID;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -14,8 +16,7 @@ import org.springframework.data.relational.core.mapping.Table;
 @Table(name = "merchants")
 public class Merchant {
     @Id
-    private Integer id;
-    private String username;
-    private String password;
+    private UUID id;
+    private String secretKey;
     private String name;
 }
