@@ -53,9 +53,7 @@ public class TransactionServiceImpl implements TransactionService {
         Transaction transaction = transactionMapper.map(dto);
         transaction.setMerchantId(merchantId);
 
-        Mono<Void> balanceCheck = type.equals(TransactionType.PAYOUT)
-                ? checkWalletBalance(merchantId, dto)
-                : Mono.empty();
+        Mono<Void> balanceCheck = findWalletAndCheckBalance(merchantId, dto);
 
         TransactionalOperator operator = TransactionalOperator.create(transactionManager);
         return operator.transactional(
@@ -120,13 +118,15 @@ public class TransactionServiceImpl implements TransactionService {
                 });
     }
 
-    private Mono<Void> checkWalletBalance(UUID merchantId, TransactionDto dto) {
+    private Mono<Void> findWalletAndCheckBalance(UUID merchantId, TransactionDto dto) {
         Integer transactionAmount = dto.getAmount();
         return walletRepository.getFirstByCurrencyAndMerchantId(dto.getCurrency(), merchantId)
                 .switchIfEmpty(Mono.error(new ResponseStatusException(HttpStatus.NOT_FOUND, "Wallet not found")))
                 .flatMap(wallet -> {
-                    if (transactionAmount > wallet.getAmount()) {
-                        return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Insufficient funds in wallet"));
+                    if (dto.getType().equals(TransactionType.PAYOUT)){
+                        if (transactionAmount > wallet.getAmount()) {
+                            return Mono.error(new ResponseStatusException(HttpStatus.BAD_REQUEST, "Insufficient funds in wallet"));
+                        }
                     }
                     return Mono.empty();
                 });

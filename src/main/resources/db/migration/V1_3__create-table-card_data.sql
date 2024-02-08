@@ -3,5 +3,5 @@ CREATE TABLE card_data (
     card_number VARCHAR(16),
     exp_date VARCHAR(5),
     cvv VARCHAR(3),
-    customer_id UUID REFERENCES customers(id)
+    customer_id UUID REFERENCES customers(id) ON DELETE CASCADE
 );

@@ -20,17 +20,16 @@ public class ChangeBalanceScheduleService {
     private final WalletService walletService;
     private final WebhookService webhookService;
 
-    @Scheduled(fixedRate = 30000)
+    @Scheduled(fixedRate = 300000)
     public void processTransactions() {
         log.info("IN ChangeBalanceScheduleService processTransactions()");
         Flux<Transaction> transactions = transactionRepository.findAllByStatus(TransactionStatus.IN_PROGRESS);
 
         transactions.concatMap(transaction -> {
-            Mono<Void> result;
             if (new Random().nextDouble() < 0.7) {
                 transaction.setStatus(TransactionStatus.SUCCESS);
                 transaction.setMessage("OK");
-                result = walletService.doTransaction(transaction)
+                return walletService.doTransaction(transaction)
                         .onErrorResume(error -> {
                             transaction.setStatus(TransactionStatus.FAILED);
                             transaction.setMessage(error.getMessage());
@@ -40,10 +39,10 @@ public class ChangeBalanceScheduleService {
                         .then(webhookService.sendWebHook(transaction));
             } else {
                 transaction.setStatus(TransactionStatus.FAILED);
-                result = transactionRepository.save(transaction)
+                transaction.setMessage("FAILED");
+                return transactionRepository.save(transaction)
                         .then(webhookService.sendWebHook(transaction));
             }
-            return result;
         }).subscribe();
     }
 

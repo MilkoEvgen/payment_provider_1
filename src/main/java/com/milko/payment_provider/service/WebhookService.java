@@ -38,9 +38,8 @@ public class WebhookService {
                                         .url(body.getNotificationUrl())
                                         .dateTime(LocalDateTime.now())
                                         .statusCode(clientResponse.statusCode().value())
-                                        .response(response)
+                                        .response(clientResponse.statusCode().isError() ? "Error response received" : response)
                                         .build();
-                                log.info("WebhookService сохраняем успешный вебхук, transaction id = {}", body.getId());
                                 return webhookRepository.save(webhookInfo).then();
                             });
                 })
@@ -51,7 +50,6 @@ public class WebhookService {
                             .statusCode(0)
                             .response(error.getMessage())
                             .build();
-                    log.info("WebhookService сохраняем НЕ успешный вебхук, transaction id = {}", body.getId());
                     return webhookRepository.save(webhookInfo).then(Mono.error(error));
                 })
                 .retryWhen(Retry.fixedDelay(4, Duration.ofSeconds(5)))

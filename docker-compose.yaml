@@ -12,11 +12,11 @@ services:
       - "5432:5432"
 
 
-#  server:
-#    build: .
-#    image: server-image
-#    container_name: server-container
-#    ports:
-#      - "8080:8080"
-#    depends_on:
-#      - db
+  server:
+    build: .
+    image: server-image
+    container_name: server-container
+    ports:
+      - "8080:8080"
+    depends_on:
+      - db
